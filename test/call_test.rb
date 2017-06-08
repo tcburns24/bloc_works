@@ -15,5 +15,4 @@ class BlocWorksTest < Test::Unit::TestCase
     assert last_response.has_header?('Content-Type')
     assert !last_response.empty?
   end
-
 end
