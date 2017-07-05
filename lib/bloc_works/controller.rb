@@ -27,5 +27,10 @@ module BlocWorks
       klass.slice!("Controller")
       BlocWorks.snake_case(klass)
     end
+
+    def params
+      req = Rack::Request.new(@env)
+      req.params
+    end
   end
 end
