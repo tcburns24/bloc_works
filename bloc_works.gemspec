@@ -22,5 +22,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rack", "~> 2.0.3"
   spec.add_runtime_dependency "erubis", "~>2.7"
-  spec.add_runtime_dependency "bloc_record"
 end

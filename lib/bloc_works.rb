@@ -1,3 +1,7 @@
+# *~@~*~@~*~@~*~@*@~*~@~*~@~*~@~*~@~*
+# ASK CYLE: what should this file look like?
+# *~@~*~@~*~@~*~@*@~*~@~*~@~*~@~*~@~*
+
 require "bloc_works/version"
 require "bloc_works/controller"
 require "bloc_works/dependencies"
@@ -17,13 +21,19 @@ module BlocWorks
         return [404, {'Content-Type' => 'text/html'}, []]
       else
         my_action = controller_and_action(env)
+        puts "controller and action are #{my_action}"
         unless my_action[0].nil?
           controller = my_action[0].new(env)
           puts "controller is '#{controller}' and action is #{my_action[1]}"
           puts "does controller respond to action? #{controller.respond_to?(my_action[1])}"
           if controller && controller.respond_to?(my_action[1])
             body = controller.send(my_action[1])
-            return [200, {'Content-Type' => 'text/html'}, [body]]
+            if controller.has_response?
+              status, header, response = controller.get_response
+              [status, header, [response.body].flatten]
+            else
+              return [200, {'Content-Type' => 'text/html'}, [body]]
+            end
           end
         end
       end

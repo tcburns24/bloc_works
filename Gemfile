@@ -6,3 +6,5 @@ gemspec
 gem 'rack-test', require: "rack/test"
 
 gem 'test-unit', '~> 3.2.4'
+
+gem 'bloc_record', path: "../../bloc_record"
