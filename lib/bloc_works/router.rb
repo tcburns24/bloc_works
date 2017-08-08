@@ -55,23 +55,23 @@ module BlocWorks
     end
 
     # Assignment 4: adding `resources`:
-    def make_resourceful(controller)
-      all_routes = [
-        "get '/#{controller}', to: #{controller}#index'"
-        "get '/#{controller}', to: #{controller}#new'"
-        "post '/#{controller}', to: #{controller}#create'"
-        "get '/#{controller}', to: #{controller}#show'",
-        "get '/#{controller}', to: #{controller}#edit'"
-        "put '/#{controller}', to: #{controller}#update'"
-        "delete '/#{controller}', to: #{controller}#destroy'"
-      ]
-      @controller = self.controller
-      if @controller.route.include?('resources')
-        for route in all_routes
-          @controller.router += route
-        end
-      end
-    end
+    # def make_resourceful(controller)
+    #   all_routes = [
+    #     "get '/#{controller}', to: #{controller}#index'"
+    #     "get '/#{controller}', to: #{controller}#new'"
+    #     "post '/#{controller}', to: #{controller}#create'"
+    #     "get '/#{controller}', to: #{controller}#show'",
+    #     "get '/#{controller}', to: #{controller}#edit'"
+    #     "put '/#{controller}', to: #{controller}#update'"
+    #     "delete '/#{controller}', to: #{controller}#destroy'"
+    #   ]
+    #   @controller = self.controller
+    #   if @controller.route.include?('resources')
+    #     for route in all_routes
+    #       @controller.router += route
+    #     end
+    #   end
+    # end
 
     def initialize
       @rules = []
