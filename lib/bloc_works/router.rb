@@ -30,7 +30,7 @@ module BlocWorks
     end
   end
 
-  class Router 
+  class Router
     # assignment: implement `redirect`:
     # get '/old/path', to: rediirect('/new/path', status: 302)
     def redirect(controller, action)
@@ -77,6 +77,24 @@ module BlocWorks
       @rules = []
     end
 
+    def resources(controller_name)
+      # GET    /books        => Show all books                          (index)
+      # GET    /books/3      => Show book "3"                           (show)
+      # GET    /books/new    => Show new book form                      (new)
+      # GET    /books/3/edit => Show edit book form for book "3"        (edit)
+      # POST   /books        => Create new book (data given in params)  (create)
+      # PUT    /books/3      => Update book "3" (data given in params)  (update)
+      # DELETE /books/3      => Delete book "3"                         (delete)
+
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "index", "request" => "GET" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "show", "request" => "GET" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "new", "request" => "GET" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "edit", "request" => "GET" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "create", "request" => "POST" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "update", "request" => "PUT" }
+      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "destroy", "request" => "DELETE" }
+    end
+
     def map(url, *args)
       options = {}
       options = args.pop if args[-1].is_a?(Hash)
@@ -110,11 +128,13 @@ module BlocWorks
                     options: options })
     end
 
-    def look_up_url(url)
+    def look_up_url(url, request)
       @rules.each do |rule|
         rule_match = rule[:regex].match(url)
 
-        if rule_match
+        request_match = (rule[:options][:default]["request"]).match(request)
+
+        if rule_match && request_match
           options = rule[:options]
           params = options[:default].dup
 

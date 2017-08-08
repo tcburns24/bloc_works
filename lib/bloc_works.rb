@@ -19,25 +19,9 @@ module BlocWorks
       #   then, execute the action and return the result
       if env['PATH_INFO'] == '/favicon.ico'
         return [404, {'Content-Type' => 'text/html'}, []]
-      else
-        my_action = controller_and_action(env)
-        puts "controller and action are #{my_action}"
-        unless my_action[0].nil?
-          controller = my_action[0].new(env)
-          puts "controller is '#{controller}' and action is #{my_action[1]}"
-          puts "does controller respond to action? #{controller.respond_to?(my_action[1])}"
-          if controller && controller.respond_to?(my_action[1])
-            body = controller.send(my_action[1])
-            if controller.has_response?
-              status, header, response = controller.get_response
-              [status, header, [response.body].flatten]
-            else
-              return [200, {'Content-Type' => 'text/html'}, [body]]
-            end
-          end
-        end
       end
-      return [404, {'Content-Type' => 'text/html'}, ["Check your controller and action in the URL"]]
+      rack_app = get_rack_app(env)
+      rack_app.call(env)
     end
   end
 end
