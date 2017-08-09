@@ -54,25 +54,6 @@ module BlocWorks
       end
     end
 
-    # Assignment 4: adding `resources`:
-    # def make_resourceful(controller)
-    #   all_routes = [
-    #     "get '/#{controller}', to: #{controller}#index'"
-    #     "get '/#{controller}', to: #{controller}#new'"
-    #     "post '/#{controller}', to: #{controller}#create'"
-    #     "get '/#{controller}', to: #{controller}#show'",
-    #     "get '/#{controller}', to: #{controller}#edit'"
-    #     "put '/#{controller}', to: #{controller}#update'"
-    #     "delete '/#{controller}', to: #{controller}#destroy'"
-    #   ]
-    #   @controller = self.controller
-    #   if @controller.route.include?('resources')
-    #     for route in all_routes
-    #       @controller.router += route
-    #     end
-    #   end
-    # end
-
     def initialize
       @rules = []
     end
@@ -86,13 +67,13 @@ module BlocWorks
       # PUT    /books/3      => Update book "3" (data given in params)  (update)
       # DELETE /books/3      => Delete book "3"                         (delete)
 
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "index", "request" => "GET" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "show", "request" => "GET" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "new", "request" => "GET" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "edit", "request" => "GET" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "create", "request" => "POST" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "update", "request" => "PUT" }
-      map "/#{controller_name}", default: { "controller" => controller_name, "action" => "destroy", "request" => "DELETE" }
+      map "/#{controller_name}",          default: { "controller" => controller_name, "action" => "index", "request" => "GET" }
+      map "/#{controller_name}/:id",      default: { "controller" => controller_name, "action" => "show", "request" => "GET" }
+      map "/#{controller_name}/new",      default: { "controller" => controller_name, "action" => "new", "request" => "GET" }
+      map "/#{controller_name}/:id/edit", default: { "controller" => controller_name, "action" => "edit", "request" => "GET" }
+      map "/#{controller_name}",          default: { "controller" => controller_name, "action" => "create", "request" => "POST" }
+      map "/#{controller_name}/:id",      default: { "controller" => controller_name, "action" => "update", "request" => "PUT" }
+      map "/#{controller_name}/:id",      default: { "controller" => controller_name, "action" => "destroy", "request" => "DELETE" }
     end
 
     def map(url, *args)
