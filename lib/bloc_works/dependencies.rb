@@ -3,7 +3,10 @@ class Object
     begin
       puts "looking for #{BlocWorks.snake_case(const.to_s)}"
       require BlocWorks.snake_case(const.to_s)
-      Object.const_get(const)
+      puts "required #{const}"
+      controller = Object.const_get(const)
+      puts "obtained const #{const}"
+      return controller
     rescue LoadError => e
       puts e.message
       puts e.backtrace.inspect

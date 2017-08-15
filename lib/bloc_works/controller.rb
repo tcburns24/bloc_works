@@ -17,17 +17,22 @@ module BlocWorks
 
     def dispatch(action, routing_params = {})
       @routing_params = routing_params
+      puts "executing action"
       text = self.send(action)
       if has_response?
+        puts "getting generated response"
         rack_response = get_response
+        puts "creating triple from response"
         [rack_response.status, rack_response.header, [rack_response.body].flatten]
       else
+        puts "creating triple from returned text"
         [200, {'Content-Type' => 'text/html'}, [text].flatten]
       end
     end
 
     def self.action(action, response = {})
-      proc { |env| self.new(env).dispatch(action, response) }
+      puts "creating proc"
+      proc { |env| puts "creating controller to dispatch"; self.new(env).dispatch(action, response) }
     end
 
     def response(text, status = 200, headers = {})
@@ -36,8 +41,23 @@ module BlocWorks
     end
 
     def render(*args)
+      puts "args was: #{args}"
+      if args.empty?
+        args = [:welcome1, {:book => "Eloquent Ruby"}]
+      elsif args.length == 1
+        args.insert(0, :welcome2)
+      end
+      puts "args is: #{args}"
       response(create_response_array(*args))
     end
+
+    # def render(locals = {})
+    #   if @routing_params["action"].nil?
+    #     response(create_response_array("index", locals))
+    #   else
+    #     response(create_response_array(@routing_params["action"], locals))
+    #   end
+    # end
 
     def get_response
       @response
@@ -51,6 +71,7 @@ module BlocWorks
       filename = File.join("app", "views", controller_dir, "#{view}.html.erb")
       template = File.read(filename)
 
+      puts "#{locals.class}"
       locals[:env] = @env
 
       # Add in instance variables (including `@` before names (e.g. @books))

@@ -26,7 +26,9 @@ module BlocWorks
         raise "No routes defined"
       end
 
-      @router.look_up_url(env["PATH_INFO"])
+      puts "looking up url"
+
+      @router.look_up_url(env["PATH_INFO"], env["REQUEST_METHOD"])
     end
   end
 
@@ -111,21 +113,29 @@ module BlocWorks
 
     def look_up_url(url, request)
       @rules.each do |rule|
+        puts "checking rule #{rule}"
+
+        puts "matching url"
         rule_match = rule[:regex].match(url)
 
+        puts "matching request"
         request_match = (rule[:options][:default]["request"]).match(request)
 
         if rule_match && request_match
+          puts "duplicating options"
           options = rule[:options]
           params = options[:default].dup
 
+          puts "copying rule captures"
           rule[:vars].each_with_index do |var, index|
             params[var] = rule_match.captures[index]
           end
 
           if rule[:destination]
+            puts "getting destination from rule destination"
             return get_destination(rule[:destination], params)
           else
+            puts "getting destination from controller and action"
             controller = params["controller"]
             action = params["action"]
             return get_destination("#{controller}##{action}", params)
@@ -136,11 +146,13 @@ module BlocWorks
 
     def get_destination(destination, routing_params = {})
       if destination.respond_to?(:call)
+        puts "returing destination with 'call'"
         return destination
       end
       if destination =~ /^([^#]+)#([^#]+)$/
         name = $1.capitalize
         controller = Object.const_get("#{name}Controller")
+        puts "returning destination from controller.action"
         return controller.action($2, routing_params)
       end
       raise "Destination not found: #{destination}"

@@ -21,6 +21,7 @@ module BlocWorks
         return [404, {'Content-Type' => 'text/html'}, []]
       end
       rack_app = get_rack_app(env)
+      puts "calling rack app"
       rack_app.call(env)
     end
   end
