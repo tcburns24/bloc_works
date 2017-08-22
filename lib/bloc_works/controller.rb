@@ -42,22 +42,45 @@ module BlocWorks
 
     def render(*args)
       puts "args was: #{args}"
-      if args.empty?
-        args = [:welcome1, {:book => "Eloquent Ruby"}]
-      elsif args.length == 1
-        args.insert(0, :welcome2)
-      end
-      puts "args is: #{args}"
-      response(create_response_array(*args))
-    end
 
-    # def render(locals = {})
-    #   if @routing_params["action"].nil?
-    #     response(create_response_array("index", locals))
-    #   else
-    #     response(create_response_array(@routing_params["action"], locals))
-    #   end
-    # end
+      # view := args[0] (if given) OR action_name
+      # locals := args[0] (if given with no view) OR args[1] (if given after view) OR {} (if not given)
+
+      puts "action: #{@routing_params["action"]}"
+
+      if args.length == 0
+        view = @routing_params["action"]
+        locals = {}
+      elsif (args.length == 1) && (args[0].class == Symbol)
+        view = args[0]
+        locals = {}
+      elsif (args.length == 1) && (args[0].class == Hash)
+        view = @routing_params["action"]
+        locals = args[0]
+      elsif args.length > 1
+        view = args[0]
+        locals = args[1]
+      end
+
+      # CASE 1:
+      #   render => args := []
+      #   view := action_name (which is @routing_params["action"])
+      #   locals := {}
+      # CASE 2:
+      #   render :arbitrary_view_name => args := [:arbitrary_view_name]
+      #   view := :arbitrary_view_name (which is args[0])
+      #   locals := {}
+      # CASE 3:
+      #   render some: "data" => args := [{some: "data"}]
+      #   view := action_name (which is @routing_params["action"])
+      #   locals := {some: "data"} (which is args[0])
+      # CASE 4:
+      #   render :arbitrary_view_name, some: "data" => args := [:arbitrary_view_name, {some: "data"}]
+      #   view := :arbitrary_view_name (which is args[0])
+      #   locals := {some: "data"} (which is args[1])
+
+      response(create_response_array(view, locals))
+    end
 
     def get_response
       @response

@@ -152,6 +152,8 @@ module BlocWorks
       if destination =~ /^([^#]+)#([^#]+)$/
         name = $1.capitalize
         controller = Object.const_get("#{name}Controller")
+        routing_params["controller"] = $1
+        routing_params["action"] = $2
         puts "returning destination from controller.action"
         return controller.action($2, routing_params)
       end
